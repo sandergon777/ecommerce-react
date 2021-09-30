@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import React, { useState } from "react";
+
+import Home from "./home/pages/Home";
+import Carrito from "./carrito/pages/Carrito";
+import Header from "./shared/Header";
 
 function App() {
+  const [logged, setLogged] = useState(false);
+  const [carrito, setCarrito] = useState([]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header
+        isLoggedIn={logged}
+        login={setLogged}
+        cantCarrito={carrito.reduce(
+          (total, producto) => total + producto.cantidad,
+          0
+        )}
+      />
+      <Switch>
+        <Route path="/" exact>
+          <Home isLoggedIn={logged} carrito={carrito} setCarrito={setCarrito} />
+        </Route>
+        <Route path="/Carrito" exact>
+          <Carrito carrito={carrito} setCarrito={setCarrito} />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
+    </Router>
   );
 }
 
